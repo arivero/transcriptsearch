@@ -1,0 +1,1 @@
+/var/ytweb/wsgi-scripts/index.wsgi
