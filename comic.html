@@ -1,1 +1,179 @@
-/var/ytweb/wsgi-scripts/comic.html
+## -*- coding: utf-8 -*-
+<html>
+<link rel="license" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
+<meta name="robots" content="follow, noindex"/> 
+<title>${videoInfo["title"]} - Storyboard</title>
+<head>
+</head>
+<body>
+<!-- Google Tag Manager, and Also UA-80442-5 in Google Analytics-->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-FFM5D"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-FFM5D');</script>
+<!-- End Google Tag Manager -->
+
+<center>
+<h2>Printable version of video <a rel="alternate" href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a>@youtube</h2>
+<h1>${videoInfo["title"]} </h1>
+</center>
+<div style="float:right">
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="es">Twittear</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<g:plusone></g:plusone>
+<!-- AddThis Button BEGIN -->
+<div style="display:inline-block" class="addthis_toolbox addthis_default_style addthis_16x16_style">
+<a class="addthis_button_facebook"></a>
+<a class="addthis_button_reddit"></a>
+<a class="addthis_button_tuenti"></a>
+<!--a class="addthis_button_pdfonline"></a>
+<a class="addthis_button_pdfmyurl"></a-->
+<a class="addthis_button_yahoomail"></a>
+<a class="addthis_button_gmail"></a>
+<a class="addthis_button_hotmail"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
+<!-- AddThis Button END -->
+
+</div>
+<div style="float:right"><a rel="alternate" href="/id/${videoId}"><button>See as continuous transcript</button></a> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+
+<h3 style="">Default Transcript</h3>
+<!--transcript text surely under CC, youtube or similar licenses -->
+<div id="sb"></div>
+<div id="transcript" style="text-align:center; width:90%; display:block; margin-left:auto; margin-right: auto; ">
+<p style="text-align:left; display:block; margin-left:auto; margin-right: auto; ">
+<tt id="transcriptpar">
+%for textline in transcript:
+<span \
+%for key in textline.attrib: 
+${key}=${textline.attrib[key]} \
+%endfor 
+info="${textline.attrib}"> ${textline.text} <br/></span> 
+%endfor
+</tt>
+</p>
+</div>
+
+%if len(transcript) > 100:
+<p><div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+<g:plusone></g:plusone>
+</p>
+%endif  
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+<script>
+window.onload=function(){
+//code from http://userscripts.org/scripts/review/164573
+    storyboard_spec='${storyboard_spec}';
+    if (storyboard_spec=="noUrl") {return} ;
+    var lines = storyboard_spec.split('|');
+    var q;
+    quality = Math.min(3,lines.length - 2); // default to best quality
+    //var quality = -1;
+    //    do {
+    //        quality++;
+    //        q = lines[quality + 1].split('#');
+    //    } while(parseInt(q[0], 10) < 400 && quality + 2 < lines.length);
+    //quality = 0
+    //if (quality<3) {var escala=2} else {var escala=1}; 
+    escala=4-quality;
+    var q = lines[quality + 1].split('#');
+    var s = {
+        url: lines[0].replace('$L', quality).replace('$N', q[6]),
+        width: parseInt(q[0], 10),
+        height: parseInt(q[1], 10),
+        count: parseInt(q[2], 10),
+        cols: parseInt(q[3], 10),
+        rows: parseInt(q[4], 10),
+        sigh: q[7]
+    };
+    s.sheetSize = s.cols * s.rows;
+    s.sheetCount = ((s.count / s.sheetSize) | 0) + 1; // bitwise OR to loose decimals
+    s.countOnLastSheet = ((s.count - 1) % s.sheetSize) + 1;
+    // 
+    var numerofotogramas=s.count
+    var lapso=${eval(videoInfoFull["contentDetails"]["duration"][2:-1].replace("H","*3600+").replace("M","*60+"))}/(s.count-1); 
+    lineas=document.getElementById('transcriptpar').children;
+    for (var i = 0; i < lineas.length; i++) {
+       var n=Math.floor(lineas[i].getAttribute("start")/lapso);
+       if (lineas[i].hasAttribute("dur") && ((n+1)*lapso < Number(lineas[i].getAttribute("start")) + Number(lineas[i].getAttribute("dur"))))
+                         { n = n+1} ; //tomamos siempre el anterior mejor que el siguiente
+       lineas[i].className="dialogodefotograma"+n;  //o classList.add("") si tiene ya otra clase
+       if (document.getElementById('fotograma'+n)==null) 
+       { var vineta=document.createElement("div");
+         vineta.setAttribute("style","border-width: 2px; border-style: solid; zoom:1; *display:inline;" ); //IE hack
+         vineta.indeximagen=n;
+         var imagen = creaimagen(n)
+         vineta.appendChild(imagen);
+         vineta.id='fotograma'+n;
+         vineta.style.position="relative";
+         //vineta.style.height=s.height*1.2;
+         vineta.style.width=escala*s.width+12;
+         //vineta.style.cssFloat="left";
+         vineta.style.display="inline-block";
+         vineta.style.verticalAlign="top"; //"middle";
+         
+         document.getElementById('sb').appendChild(vineta)
+       }
+    } 
+   
+    var vinetas=document.getElementById('sb').children; 
+    for (var i =0; i <  vinetas.length; i++) {
+      n=vinetas[i].indeximagen;
+      var parrafo=document.createElement("p");
+      parrafo.style.margin="0.5em"
+      vinetas[i].appendChild(parrafo)
+      var lineas= document.getElementsByClassName("dialogodefotograma"+n);
+         for (var j =0; j <  lineas.length; j++) {
+      parrafo.appendChild(lineas[j]);
+      }
+    }
+
+    function creaimagen(n) {
+       var sheet= Math.floor(n/s.sheetSize);
+       var localpos=n-sheet*s.sheetSize;
+       var fila=Math.floor(localpos/s.cols);
+       var columna=localpos-s.cols*fila;
+       var targetsrc=s.url.replace('$M', sheet) + "?sigh=" + s.sigh;
+       var contenedor=document.createElement("div");
+       contenedor.style.display="block";
+       //contenedor.style.align="center";
+       contenedor.style.position="relative";
+       contenedor.style.marginTop="6px";
+       contenedor.style.marginLeft="auto";
+       contenedor.style.marginRight="auto";
+       contenedor.style.background="green";
+       contenedor.style.width=s.width*escala;
+       contenedor.style.height=s.height*escala;
+       var imagen=document.createElement("img");   // Mucho de lo que definimos aqui deberia ir a una CSS class.
+       contenedor.appendChild(imagen); 
+       imagen.setAttribute("src",targetsrc);
+       //imagen.style.margin="0px 0px "+(-1)*(s.rows-1)*s.height+"px 0px";  //top right bottom left
+       //ojo que al ultimo podrian faltarle filas.
+       //imagen.style.margin=(-fila*s.height)+"px "+(-1)*(s.cols-columna-1)*s.width +"px "+(-1)*(s.rows-fila-1)*s.height+"px "+(-1)*s.width*columna+"px";
+       imagen.style.position="absolute";
+       imagen.style.width=s.width*s.cols*escala;
+       imagen.style.clip="rect("+fila*s.height*escala+"px, "+(columna+1)*s.width*escala+"px, "+(fila+1)*s.height*escala+"px, "+columna*s.width*escala+"px)";
+       //imagen.style.clip="rect("+fila*100/3+"%, "+(columna+1)*100/3+"%, "+(fila+1)*100/3+"%, "+columna*100/3+"%)";
+       imagen.style.top=-(fila*s.height*escala)+"px";
+       imagen.style.left=(-columna*s.width*escala)+"px";
+       //imagen.style.display="block";
+       //imagen.style.mozTransform="scale(0.3);";
+       //imagen.style.zoom="10%";     //0.1; // esto funciona bien en chrome
+       //imagen.style.width=s.width*1+"px"  //esto falla en chrome, comprime la imagen antes de cropearla 
+       return contenedor
+     }
+}
+</script>
+
+</body>
+</html>

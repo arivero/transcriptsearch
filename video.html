@@ -1,1 +1,215 @@
-/var/ytweb/wsgi-scripts/video.html
+## -*- coding: utf-8 -*-
+<html>
+<title>${videoInfo["title"]} - Transcript</title>
+<link name="upstream" rel="author" href="https://github.com/arivero/transcriptsearch"/>
+<link name="website" rel="license" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
+<link name="transcript_text_cc" rel=license href="http://creativecommons.org/licenses/by/3.0/"/>
+<link name="transcript_text_yt" rel=license href="http://www.youtube.com/t/terms">
+<meta name="creation_date" content="${videoInfo['publishedAt']}" />
+<meta name="distribution" content="global"> 
+<link rel="original-source" href="http://www.youtube.com/watch?v=${videoId}" />
+<!--original source vease http://googlenewsblog.blogspot.com.es/2010/11/credit-where-credit-is-due.html 
+Habria que usar tambien description, channelId y channelTitle, como publishers  
+-->
+<head>
+</head>
+<body>
+<!-- Google Tag Manager, and Also UA-80442-5 in Google Analytics-->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-FFM5D"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-FFM5D');</script>
+<!-- End Google Tag Manager -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
+<!-- AddThis Button END -->
+<center>
+<h2>Caption info for Youtube Video <a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></h2>
+<h1>${videoInfo["title"]} </h1>
+</center>
+<div style="float:right">
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="es">Twittear</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<g:plusone></g:plusone>
+<!-- AddThis Button BEGIN -->
+<div style="display:inline-block" class="addthis_toolbox addthis_default_style addthis_16x16_style">
+<a class="addthis_button_facebook"></a>
+<a class="addthis_button_reddit"></a>
+<a class="addthis_button_tuenti"></a>
+<!--a class="addthis_button_pdfonline"></a>
+<a class="addthis_button_pdfmyurl"></a-->
+<a class="addthis_button_yahoomail"></a>
+<a class="addthis_button_gmail"></a>
+<a class="addthis_button_hotmail"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
+<!-- AddThis Button END -->
+</div>
+<div style="float:right">
+%if storyboard_spec=="noUrl":
+<small>Pictures not available</small>
+%else:
+<a rel="nofollow,alternate" href="/comic/${videoId}"><button>See comic-like layout</button></a>
+%endif
+ &nbsp; &nbsp; &nbsp; &nbsp;
+ </div>
+<div>
+<!-- aqui podriamos limitarnos a items del tipo track, por si acaso-->
+<p>Available:
+%for item in trList:
+&nbsp;
+${item.attrib["name"]}
+<a name="${item.attrib["name"]}" href="?lang=${item.attrib["lang_code"]}${"&kind="+item.attrib["kind"] if "kind" in item.attrib else ''}">
+${item.attrib["lang_translated"]}
+%if "kind" in item.attrib:
+(${item.attrib["kind"]}!!)
+%endif
+%if "lang_default" in item.attrib:
+(default)
+%endif
+</a>
+%endfor
+</p>
+<h3 style="">Transcript <sup>(*)</sup></h3>
+<div id="sb"></div>
+<div id="transcript" style="text-align:center; width:90%; display:block; margin-left:auto; margin-right: auto; ">
+<p style="text-align:left; display:block; margin-left:auto; margin-right: auto; ">
+<tt>
+%for textline in transcript:
+<span \
+%for key in textline.attrib: 
+${key}=${textline.attrib[key]} \
+%endfor 
+info="${textline.attrib}"></span> ${textline.text} <br/>
+%endfor
+</tt>
+</p>
+</div>
+
+%if len(transcript) > 100:
+<p><div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+<g:plusone></g:plusone>
+</p>
+%endif  
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+<script>
+window.onload=function(){
+//code from http://userscripts.org/scripts/review/164573
+    storyboard_spec='${storyboard_spec}';
+    if (storyboard_spec=="noUrl") {return} ;
+    var lines = storyboard_spec.split('|');
+    var q;
+    quality = Math.min(3,lines.length - 2); // default to best quality
+    //var quality = -1;
+    //    do {
+    //        quality++;
+    //        q = lines[quality + 1].split('#');
+    //    } while(parseInt(q[0], 10) < 400 && quality + 2 < lines.length);
+    //quality = 0
+    var q = lines[quality + 1].split('#');
+    var s = {
+        url: lines[0].replace('$L', quality).replace('$N', q[6]),
+        width: parseInt(q[0], 10),
+        height: parseInt(q[1], 10),
+        count: parseInt(q[2], 10),
+        cols: parseInt(q[3], 10),
+        rows: parseInt(q[4], 10),
+        sigh: q[7]
+    };
+    s.sheetSize = s.cols * s.rows;
+    s.sheetCount = ((s.count / s.sheetSize) | 0) + 1; // bitwise OR to loose decimals
+    s.countOnLastSheet = ((s.count - 1) % s.sheetSize) + 1;
+    document.getElementById('sb').setAttribute("style","overflow:hidden;display:block;float:right"); //el orden importa, primero asi... 
+    document.getElementById('sb').style.width=s.width+'px'; //y luego de la forma vieja
+    //document.getElementById('sb').style.height="100%"
+    document.getElementById('sb').style.overflow="hidden";
+    document.getElementById('sb').style.position="relative";
+    var sheet=0; do {
+    var targetsrc=s.url.replace('$M', sheet) + "?sigh=" + s.sigh;
+    var imagen=document.createElement("img");   // Mucho de lo que definimos aqui deberia ir a una CSS class.
+    imagen.setAttribute("src",targetsrc);
+    imagen.style.margin="0px 0px "+(-1)*(s.rows-1)*s.height+"px 0px";  //top right bottom left
+    //imagen.style.margin=(-1)*s.height+"px 0px "+(-1)*(s.rows-2)*s.height+"px "+(-1)*s.width*(s.cols-1)+"px";
+    imagen.style.position="absolute";
+    //clip solo funciona para fixed o absolute!!!!!. Ademas, en IE viejo no admite separar por comas
+    //ver https://developer.mozilla.org/en-US/docs/Web/CSS/clip?redirectlocale=en-US&redirectslug=CSS%2Fclip
+    //imagen.setAttribute("style","position:fixed; clip: rect(top right bottom left 10px, 160px, 70px, 20px);");
+    imagen.style.clip="rect(0px, "+s.width+"px, "+s.height+"px, 0px)";
+    imagen.style.top=sheet*s.height+"px"
+    document.getElementById("sb").appendChild(imagen);
+    imagen.onmouseover=function(){this.style.zIndex=99;
+                                  this.style["border-style"]="solid";
+                                  //this.style["pointer-events"]="none";
+                                  if (this.previousElementSibling != null) {
+                                       this.previousElementSibling.style.zIndex=0;
+                                       //this.style["border-style"]="none";
+                                   }};
+    imagen.onmouseout=function(){this.style.zIndex=0;
+                                this.style["border-style"]="none";};
+    // setAttribute("height", "768"); setAttribute("width", "1024");
+    sheet ++;
+    } while(sheet < s.sheetCount );
+    document.getElementById("transcript").previoSize=0;
+    document.getElementById("transcript").style["min-height"]=2*s.height+"px"
+    //ahora, ajustamos el espaciado
+    window.onresize=function(){
+              var altura=document.getElementById("transcript").offsetHeight; // o clientHeight sin los scroll ni border, o scrollHeight
+              var alturasb=document.getElementById("sb").offsetHeight;
+              var k=document.getElementById("transcript").previoSize / altura;
+              if (k<0.99 || k > 1.01) {
+                 var children=document.getElementById('sb').children;
+                 alturaelem=s.height;
+                 totalelems=children.length;
+                 for (var i = 0; i < children.length; i++) 
+                   {
+                     children[i].style.top=i*(altura)/(totalelems)+"px";
+                     //console.log(i,i*(altura-alturaelem)/(totalelems)+"px");
+                    }
+                 document.getElementById("sb").style.height=altura;
+                 document.getElementById("transcript").previoSize=altura;
+                 setTimeout(window.onresize,1);  //scope milagroso: usa el s del metodo donde lo hemos definido, pero el onresize nuevo
+              } ; 
+           };
+    setTimeout(window.onresize,0);
+}
+</script>
+<small>(*): If a transcript is not set in the URL query, we show the last
+of the list of available transcripts. Note that "ASR" transcripts come from
+the voice recognition software at Youtube.</small>
+<h3>Other Info</h3>
+<script>
+function putFBname(respuesta){
+ span=document.getElementById(respuesta["id"]);
+ span.innerHTML=" "+respuesta["property"]["/type/object/name"]["values"][0]["text"];
+}
+</script>
+<p><b>Youtube CategoryID</b>: <a rel="tag" href="/${videoInfo['categoryId']}">${videoInfo["categoryId"]}</a> </p>
+<p><b>Duration:</b> ${eval(videoInfoFull["contentDetails"]["duration"][2:-1].replace("H","*3600+").replace("M","*60+"))} seconds</p>
+%if videoInfoFull.has_key("topicDetails"):
+<p><b>FreeBase Topics:</b>
+   %for item in  videoInfoFull["topicDetails"]["topicIds"]:
+      &nbsp;
+      <a rel="tag" href="${item}">${item}</a><span id=${item}></span>;
+      <script src="https://www.googleapis.com/freebase/v1/topic${item}?filter=/type/object/name&callback=putFBname"></script>
+   %endfor
+</p>
+%endif
+%if videoInfoFull.has_key("recordingDetails"):
+   %if videoInfoFull["recordingDetails"].has_key("locationDescription"):
+<p><b>Recording Location:</b> ${videoInfoFull["recordingDetails"]["locationDescription"]}</p>
+   %endif
+   %if videoInfoFull["recordingDetails"].has_key("recordingDate"):
+<p><b>Recording Date::</b> ${videoInfoFull["recordingDetails"]["recordingDate"]}</p>
+   %endif
+%endif
+
+</body>
+</html>

@@ -1,1 +1,74 @@
-/var/ytweb/wsgi-scripts/index.html
+## -*- coding: utf-8 -*-
+<%page cached="False" />
+<html lang="en">
+<head>
+<link name="upstream" rel="author" href="https://github.com/arivero/transcriptsearch"/>
+<link rel="license" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
+<title>A Caption Search Engine</title>
+%if categoria=="":
+<meta name="robots" content="follow, index" />
+%else:
+<meta name="robots" content="follow, noindex" />
+%endif
+<meta charset="UTF-8" />
+<meta http-equiv="Content-language" content="en_US">
+<meta name="google" value="notranslate" />
+<!-- MkBuOt8VBv3juq4VxNo7tnkuNvA -->
+<meta property="fb:admins" content="512422705" />
+<meta name="description" content="A text browser for youtube.
+ It shows the transcript of the video instead of
+running the player">
+</head>
+<body><center>
+<h1>Search for video captions</h1>
+<p>This engine allows you to search in the transcripts of 
+video services (currently, only youtube...) </p>
+<script>
+  (function() {
+    var cx = '009091862570347197061:WMX1397573069';
+    var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<gcse:search></gcse:search>
+
+%if len(items)>0:
+%if categoria=="": 
+<h3>You can also browse the captions of popular videos:</h3>
+%else:
+<h3>Here are some videos from ${categoria}:</h3>
+%endif
+%endif
+<table>
+<tr>
+%for i, entry in enumerate(items):  
+<td>
+<img src="${entry["snippet"]["thumbnails"]["default"]["url"]}"/>  
+</td>
+<td>
+<p><a href=/id/${entry["id"]["videoId"]} title="${entry["snippet"]["title"]}">
+${entry["snippet"]["title"]}</a></p>
+<p>${entry["snippet"]["description"]}</p>
+</td>
+%if (i)%2:
+</tr>
+<tr>
+%endif
+%endfor
+</tr>
+</table>
+</center>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-80442-5', 'transcriptsearch.com.es');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
