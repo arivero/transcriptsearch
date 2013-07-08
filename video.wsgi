@@ -121,6 +121,8 @@ def serve(environ, start_response):
     template=lookup.get_template("video.html")
     output=template.render(videoInfo=contentInfo["snippet"],videoInfoFull=contentInfo,
                            videoId=videoId,
+                           language=lang,
+                           isASR= True if kind=="asr" else False,
                            storyboard_spec=json.loads('"noUrl"' if grepstoryboard == None else grepstoryboard.group(1) ),
                            transcript=parsedTranscript,
                            trList=parsedList)
