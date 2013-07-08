@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 <html>
 <link rel="license" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
-<meta name="robots" content="follow, noindex"/> 
+<meta name="robots" content="follow, noindex,noimageindex"/> 
 <title>${videoInfo["title"]} - Storyboard</title>
 <head>
 </head>
@@ -58,11 +58,6 @@ info="${textline.attrib}"> ${textline.text} <br/></span>
 </p>
 </div>
 
-%if len(transcript) > 100:
-<p><div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-<g:plusone></g:plusone>
-</p>
-%endif  
 <script type="text/javascript">
   (function() {
     var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;

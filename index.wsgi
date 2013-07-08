@@ -77,6 +77,10 @@ def serve(environ, start_response):
     #print len(output)
     response_headers = [('Content-type', 'text/html;charset=UTF-8'),
                         ('Content-Length', str(len(output)))]
+    if path[1] != "":
+       response_headers.append(('X-Robots-Tag','noarchive,follow,noindex,notranslate,noimageindex'))
+    else:
+       response_headers.append(('X-Robots-Tag','noarchive,follow,index,notranslate,noimageindex'))
     start_response(status, response_headers)
     return [output]
  

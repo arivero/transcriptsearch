@@ -54,8 +54,7 @@ lookup = TemplateLookup(directories=[root, root + 'templates','./'],
               output_encoding='utf-8', encoding_errors='replace')  #, input_encoding='utf-8')
 
 def serve(environ, start_response):
-    #videoId=environ["REQUEST_URI"].split('/')[2].split('?')[0]
-    videoId=cgi.escape(environ["SCRIPT_URL"].split('/')[2])
+    videoId=cgi.escape(environ["SCRIPT_URL"].split('/')[2])   #consider re.match for serious control
     parsedQuery=cgi.parse_qs(environ["QUERY_STRING"])
 
 
