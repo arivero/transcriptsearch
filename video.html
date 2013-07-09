@@ -12,6 +12,9 @@
 <!--original source vease http://googlenewsblog.blogspot.com.es/2010/11/credit-where-credit-is-due.html 
 Habria que usar tambien description, channelId y channelTitle, como publishers  
 -->
+<meta property="og:video" content="http://www.youtube.com/v/${videoId}" /> 
+<meta property="og:type"  content="video" />
+<meta name="twitter:description" content="${videoInfo["description"][:160]}..." />
 <head>
 </head>
 <body>
@@ -26,6 +29,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
 <!-- AddThis Button END -->
+<div style="width:2em;height:2em;display:block;float:left"><small><a href="/">home</a></small></div>
 <center>
 <h2>Caption info for Youtube Video <a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></h2>
 <h1>${videoInfo["title"]} </h1>
@@ -74,18 +78,42 @@ ${item.attrib["lang_translated"]}
 %endfor
 </p>
 <h3 style="">Transcript <sup>(*)</sup></h3>
-<div id="sb"></div>
+<div style="display:block;float:right">
+%if len(transcript)>50:
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:180px;height:90px"
+     data-ad-client="ca-pub-7459812506874928"
+     data-ad-slot="4638277394"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<hr>
+%endif
+<div id="sb"> </div>
+</div>
 <div id="transcript" style="text-align:center; width:90%; display:block; margin-left:auto; margin-right: auto; ">
-<p style="text-align:left; display:block; margin-left:auto; margin-right: auto; ">
-<tt>
-%for textline in transcript:
+<p style="text-align:left; display:block; margin-left:auto; margin-right: auto; font-family:monospace ">
+%for i, textline in enumerate(transcript):
 <span \
 %for key in textline.attrib: 
 ${key}=${textline.attrib[key]} \
 %endfor 
 info="${textline.attrib}"></span> ${textline.text} <br/>
+%if (i==60):
+<span style="padding:2px;margin-left:auto;margin-right:auto;width:728px;">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-7459812506874928"
+     data-ad-slot="1964012594"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<br/>
+%endif
 %endfor
-</tt>
 </p>
 </div>
 
@@ -93,7 +121,22 @@ info="${textline.attrib}"></span> ${textline.text} <br/>
 <p>
 <g:plusone></g:plusone>
 </p>
-%endif  
+%endif 
+
+
+%if len(transcript) > 300:
+<div style="padding:8px;">
+<ins class="adsbygoogle"
+     style="display:inline-block;width:970px;height:90px"
+     data-ad-client="ca-pub-7459812506874928"
+     data-ad-slot="7870945398"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+%endif
+
+ 
 <script type="text/javascript">
   (function() {
     var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
@@ -211,6 +254,6 @@ function putFBname(respuesta){
 <p><b>Recording Date::</b> ${videoInfoFull["recordingDetails"]["recordingDate"]}</p>
    %endif
 %endif
-
+<h3><a href="/">Search more videos</a></h3>
 </body>
 </html>

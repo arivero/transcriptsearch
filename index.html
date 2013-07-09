@@ -40,6 +40,8 @@ video services (currently, only youtube...) </p>
 %else:
 <h3>Here are some videos from ${categoria}:</h3>
 %endif
+%else:
+<h3>There are not highly rated videos in ${categoria} just now</h3>
 %endif
 <table>
 <tr>
@@ -56,6 +58,26 @@ ${entry["snippet"]["title"]}</a></p>
 </tr>
 <tr>
 %endif
+
+%if i==5:
+<td colspan="4" align="center" style="text-align:center;padding:10px;">
+<div style="display:block;margin-left:auto;margin-right:auto;width:728px;">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-7459812506874928"
+     data-ad-slot="1964012594"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+</td>
+</tr>
+<tr>
+%endif
+
+
+
 %endfor
 </tr>
 </table>

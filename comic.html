@@ -65,6 +65,7 @@ info="${textline.attrib}"> ${textline.text} <br/></span>
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
   })();
 </script>
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <script>
 window.onload=function(){
 //code from http://userscripts.org/scripts/review/164573
@@ -98,6 +99,7 @@ window.onload=function(){
     var numerofotogramas=s.count
     var lapso=${eval(videoInfoFull["contentDetails"]["duration"][2:-1].replace("H","*3600+").replace("M","*60+"))}/(s.count-1); 
     lineas=document.getElementById('transcriptpar').children;
+    var totalanuncios=0;
     for (var i = 0; i < lineas.length; i++) {
        var n=Math.floor(lineas[i].getAttribute("start")/lapso);
        if (lineas[i].hasAttribute("dur") && ((n+1)*lapso < Number(lineas[i].getAttribute("start")) + Number(lineas[i].getAttribute("dur"))))
@@ -116,8 +118,20 @@ window.onload=function(){
          //vineta.style.cssFloat="left";
          vineta.style.display="inline-block";
          vineta.style.verticalAlign="top"; //"middle";
-         
-         document.getElementById('sb').appendChild(vineta)
+         document.getElementById('sb').appendChild(vineta);
+         if (totalanuncios < 3 && Math.random()< 1/(9)  ) {
+         var publi=document.createElement("div");
+         publi.setAttribute("style","border-width: 2px; min-height:125px; margin-left:auto; margin-right:auto;zoom:1; *display:inline-block;");
+         publi.style.position="relative";
+         publi.style.width=escala*s.width+12;
+         publi.style.display="inline-block";
+         publi.style.verticalAlign="bottom";
+         publi.style.marginBottom='1%';
+         document.getElementById('sb').appendChild(publi);
+         publi.innerHTML= '<div style="margin-left:auto;margin-right:auto;width:300px;"><ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px;" data-ad-client="ca-pub-7459812506874928" data-ad-slot="1405609398"></ins></div>';
+         (adsbygoogle = window.adsbygoogle || []).push({});
+         totalanuncios++;
+           }
        }
     } 
    
