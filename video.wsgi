@@ -24,6 +24,7 @@ import ConfigParser
 config=ConfigParser.RawConfigParser()
 config.read(["/etc/configfile.dat"])
 MIAPPKEY=config.get("keys","MIAPPKEY")
+PROXYLIST=config.get("keys","PROXYLIST").split(',')
 URLCOMMANDFORRELATEDVIDEOS="https://www.googleapis.com/youtube/v3/search?part=snippet&key=%s&maxResults=5&videoCaption=closedCaption&type=video&safeSearch=none&order=viewCount&relatedToVideoId=%s&fields=etag,items(id/videoId,snippet/title)&videoLicense=creativeCommon"
 URLCOMMANDVIDEO="https://www.googleapis.com/youtube/v3/videos?id=%s&part=snippet,contentDetails,topicDetails,recordingDetails&fields=etag,items(snippet(title,description,categoryId,publishedAt),contentDetails/caption,contentDetails/duration,recordingDetails(locationDescription,recordingDate),topicDetails/topicIds)&key=%s"
 
@@ -58,10 +59,17 @@ def serve(environ, start_response):
     parsedQuery=cgi.parse_qs(environ["QUERY_STRING"])
 
 
-    http=httplib2.Http("/tmp/micache") # con .cache? 
+    apihttp=httplib2.Http("/tmp/miAPIcache")  
+    import socks
+    from random import choice
+    #bien hecho: proxy list desde config y un try-catch para que siga sin proxy
+    http=httplib2.Http("/tmp/micache",
+            proxy_info=httplib2.ProxyInfo(proxy_type=socks.PROXY_TYPE_HTTP,
+            proxy_host=choice(PROXYLIST),
+             proxy_port=3128))
     headers = { } 
-    resp,content=f_retry(http.request,URLCOMMANDVIDEO % (videoId,MIAPPKEY), "GET")
-    if resp["status"] != "200" and resp["status"] != "304":
+    resp,content=f_retry(apihttp.request,URLCOMMANDVIDEO % (videoId,MIAPPKEY), "GET")
+    if (resp["status"] != "200" and resp["status"] != "304") or len(json.loads(content)["items"])==0:
         print resp
         start_response('404 Not Found',[])
         return ["<body>no data now<p>Please try again in a few hours</body>"]
@@ -113,8 +121,13 @@ def serve(environ, start_response):
            respTranscript,contentTranscript=http.request("http://video.google.com/timedtext?"+ttsurl+"&lang="+lang+"&kind=asr","GET",headers={'Cookie': resp['set-cookie']})
        #print respTranscript
        if len(contentTranscript)<30:
-          contentTranscript="<transcript><text start='0.01' dur='2.145'>No text available</text><text>Try to reload later</text></transcript>"
-       parsedTranscript=ET.fromstring(contentTranscript)
+          contentTranscript="<transcript><text start='0.01' dur='2.145'>No text available</text><text>No transcript?</text></transcript>"
+       #print contentTranscript
+       parsedTranscript=ET.fromstring("<transcript><text start='0.01' dur='2.145'>No text available</text><text>Too long or malformed</text></transcript>")
+       try:
+          parsedTranscript=ET.fromstring(contentTranscript)
+       except:
+          pass
     else: 
        parsedList=ET.fromstring("<transcript_list><track note='Empty List'></track></transcript_list>")
        parsedTranscript=ET.fromstring("<transcript><text start='0.01' dur='2.145'>No text available</text><text>Try to reload later</text></transcript>")

@@ -1,5 +1,6 @@
 ## -*- coding: utf-8 -*-
 <html lang="${language}">
+<head>
 <title>${videoInfo["title"]} - Transcript</title>
 <link rel="canonical" href="/id/${videoId}?lang=${language}${'&kind=asr' if isASR else ''}">
 <link name="upstream" rel="author" href="https://github.com/arivero/transcriptsearch"/>
@@ -15,7 +16,6 @@ Habria que usar tambien description, channelId y channelTitle, como publishers
 <meta property="og:video" content="http://www.youtube.com/v/${videoId}" /> 
 <meta property="og:type"  content="video" />
 <meta name="twitter:description" content="${videoInfo["description"][:160]}..." />
-<head>
 </head>
 <body>
 <!-- Google Tag Manager, and Also UA-80442-5 in Google Analytics-->
@@ -64,15 +64,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- aqui podriamos limitarnos a items del tipo track, por si acaso-->
 <p>Available:
 %for item in trList:
-&nbsp;
-${item.attrib["name"]}
-<a name="${item.attrib["name"]}" href="?lang=${item.attrib["lang_code"]}${"&kind="+item.attrib["kind"] if "kind" in item.attrib else ''}">
-${item.attrib["lang_translated"]}
+&nbsp; ${item.attrib["name"]} \
+<a name="${item.attrib["name"]}" \
+%if not ("kind" in item.attrib):
+rel="alternate" hreflang="${item.attrib["lang_code"]}" \
+%endif
+href="?lang=${item.attrib["lang_code"]}${"&kind="+item.attrib["kind"] if "kind" in item.attrib else ''}">\
+${item.attrib["lang_translated"]}\
 %if "kind" in item.attrib:
-(${item.attrib["kind"]}!!)
+(${item.attrib["kind"]}!!)\
 %endif
 %if "lang_default" in item.attrib:
-(default)
+(default)\
 %endif
 </a>
 %endfor
@@ -255,5 +258,12 @@ function putFBname(respuesta){
    %endif
 %endif
 <h3><a href="/">Search more videos</a></h3>
+<hr>
+<em>If you find this site useful, please tweet about it, blog about it, or 
+add it to the your list of recommended websites.</em>
+<p>Obviously, the more traffic -and online feedback- it gets, the more I will work on it
+</p>
+<p>(For instance, next step is to add also the language options for the comic/storyboard
+view) </p>
 </body>
 </html>
