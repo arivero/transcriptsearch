@@ -27,6 +27,10 @@ you do implementations using other libraries (eg, getting
 rid of httplib2), please honor the AGPLv3, it is so easy
 as branching it here in github :-D
 
+You must also provide a configfile with  your youtube API key
+and a comma separated list of proxies. That, or edit the
+proxy code out.
+
 --------------------------
 
 If you plan to use this idea as a service, you should consider
