@@ -39,14 +39,14 @@ you should not cache the contents of a crawl, so you should
 disable the cache feature in httplib2 for the "video.wsgi" page 
 or purge it frequently. Surely the license of google about
 youtube contents is different, so you can consider to allow 
-them to kept the cache. You can also consider to "redirect 30x"
+them to keep the cache. You can also consider to "redirect 30x"
 directly to youtube.com, but googlebot does not like extensive
-use of redirections.  
+use of redirections, so better do not.  
 
 Neither the video.wsgi script nor the comic.wsgi are replaying
-the video, so most of the issues about independent players
+the video, so most of the TOS issues about independent players
 do not apply. But comic.wsgi can be considered a rework
-of the original work; you are in safer grounds if you only
+of the original work; so you are in safer grounds if you only
 allow comic.wsgi for videos with Creative Commons license. The
 videos under general youtube license also allow for 
 reworking, but the wording of the license is more convolved
@@ -61,7 +61,7 @@ In any case, do not take my words as legal advice; it is
 simply a guide for you to understand that there are issues
 always when you plan an internet search aid. You must consider
 your local rules, and you can also consider Google's BCP:
-as they are both the owners of Youtube and of the Dominant
+as they are the owners both of Youtube and of the Dominant
 Search Engine in the web, their commom practices are surely
 the most valid practices.
 
