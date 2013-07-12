@@ -17,9 +17,9 @@ a python based crawler and search engine.
 The scripts are made to work with apache WSGIa module.
 You must provide executions for /id, /comic and / :
 
-WSGIScriptAlias /id /cript/video.wsgi
-WSGIScriptAlias /comic /cript/comic.wsgi
-WSGIScriptAlias / /var/cript/index.wsgi
+    WSGIScriptAlias /id /cript/video.wsgi
+    WSGIScriptAlias /comic /cript/comic.wsgi
+    WSGIScriptAlias / /var/cript/index.wsgi
 
 The main worry for installation is to be sure that you have
 all the needed modules for python and the webserver. If
