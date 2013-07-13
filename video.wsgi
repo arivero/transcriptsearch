@@ -47,6 +47,24 @@ def f_retry(f,*args, **kwargs):
             mtries=0
        return rv
 
+#this idea from http://stackoverflow.com/questions/6893968/how-to-get-the-return-value-from-a-thread-in-python
+from threading import Thread
+class ThreadWithReturnValue(Thread):
+    def __init__(self, group=None, target=None, name=None,
+                 args=(), kwargs={}, Verbose=None):
+        Thread.__init__(self, group, target, name, args, kwargs, Verbose)
+        self._return = None
+    def run(self):
+        if self._Thread__target is not None:
+            self._return = self._Thread__target(*self._Thread__args,
+                                                **self._Thread__kwargs)
+    def join(self):
+        Thread.join(self)
+        return self._return
+
+def doApiHttp(apiHttpObject,apiHttpQuery):
+    resp,content=apiHttpObject.request(apiHttpQuery)
+    return resp,content
 
 lookup = TemplateLookup(directories=[root, root + 'templates','./'], 
               filesystem_checks=True, 
@@ -58,7 +76,7 @@ def serve(environ, start_response):
     videoId=cgi.escape(environ["SCRIPT_URL"].split('/')[2])   #consider re.match for serious control
     parsedQuery=cgi.parse_qs(environ["QUERY_STRING"])
 
-
+    httplib2.RETRIES=1 #el dfault es 2!!!
     apihttp=httplib2.Http("/tmp/miAPIcache")  
     import socks
     from random import choice
@@ -66,14 +84,12 @@ def serve(environ, start_response):
     http=httplib2.Http("/tmp/micache",
             proxy_info=httplib2.ProxyInfo(proxy_type=socks.PROXY_TYPE_HTTP,
             proxy_host=choice(PROXYLIST),
+            proxy_rdns=True,
              proxy_port=3128))
     headers = { } 
-    resp,content=f_retry(apihttp.request,URLCOMMANDVIDEO % (videoId,MIAPPKEY), "GET")
-    if (resp["status"] != "200" and resp["status"] != "304") or len(json.loads(content)["items"])==0:
-        print resp
-        start_response('404 Not Found',[])
-        return ["<body>no data now<p>Please try again in a few hours</body>"]
-    contentInfo=json.loads(content)["items"][0]
+
+    apiThread=ThreadWithReturnValue(target=doApiHttp, args=(apihttp,URLCOMMANDVIDEO % (videoId,MIAPPKEY)))
+    apiThread.start()
 
     import urllib
     import re
@@ -131,6 +147,14 @@ def serve(environ, start_response):
     else: 
        parsedList=ET.fromstring("<transcript_list><track note='Empty List'></track></transcript_list>")
        parsedTranscript=ET.fromstring("<transcript><text start='0.01' dur='2.145'>No text available</text><text>Try to reload later</text></transcript>")
+
+    resp,content=apiThread.join()
+    if (resp["status"] != "200" and resp["status"] != "304") or len(json.loads(content)["items"])==0:
+        print resp
+        start_response('404 Not Found',[])
+        return ["<body>no data now<p>Please try again in a few hours</body>"]
+    contentInfo=json.loads(content)["items"][0]
+
     template=lookup.get_template("video.html")
     output=template.render(videoInfo=contentInfo["snippet"],videoInfoFull=contentInfo,
                            videoId=videoId,

@@ -8,6 +8,7 @@
 <link name="transcript_text_cc" rel=license href="http://creativecommons.org/licenses/by/3.0/"/>
 <link name="transcript_text_yt" rel=license href="http://www.youtube.com/t/terms">
 <meta name="creation_date" content="${videoInfo['publishedAt']}" />
+<base href="http://www.transcriptsearch.com.es/id/${videoId}" />
 <meta name="distribution" content="global"> 
 <link rel="original-source" href="http://www.youtube.com/watch?v=${videoId}" />
 <!--original source vease http://googlenewsblog.blogspot.com.es/2010/11/credit-where-credit-is-due.html 
@@ -35,11 +36,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <h1>${videoInfo["title"]} </h1>
 </center>
 <div style="float:right">
-<a href="https://twitter.com/share" class="twitter-share-button" data-lang="es">Twittear</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-<g:plusone></g:plusone>
 <!-- AddThis Button BEGIN -->
 <div style="display:inline-block" class="addthis_toolbox addthis_default_style addthis_16x16_style">
+<a class="addthis_button_twitter"></a>
 <a class="addthis_button_facebook"></a>
 <a class="addthis_button_reddit"></a>
 <a class="addthis_button_tuenti"></a>
@@ -51,14 +50,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
 <!-- AddThis Button END -->
+<g:plusone></g:plusone>
 </div>
 <div style="float:right">
+<a rel="nofollow,alternate" title="In YT, look for transcript button, next to statistics button"
+href="http://www.youtube.com/watch?v=${videoId}"><button>See in YouTube</button></a>
 %if storyboard_spec=="noUrl":
-<small>Pictures not available now</small>
+<small></small>
 %else:
 <a rel="nofollow,alternate" href="/comic/${videoId}"><button>See comic-like layout</button></a>
 %endif
- &nbsp; &nbsp; &nbsp; &nbsp;
+ &nbsp;
  </div>
 <div>
 <!-- aqui podriamos limitarnos a items del tipo track, por si acaso-->
@@ -235,17 +237,18 @@ the voice recognition software at Youtube.</small>
 <script>
 function putFBname(respuesta){
  span=document.getElementById(respuesta["id"]);
- span.innerHTML=" "+respuesta["property"]["/type/object/name"]["values"][0]["text"];
+ span.innerHTMLprev=" "+respuesta["property"]["/type/object/name"]["values"][0]["text"];
+ document.write(span.innerHTMLprev);
 }
 </script>
 <p><b>Youtube CategoryID</b>: <a rel="tag" href="/${videoInfo['categoryId']}">${videoInfo["categoryId"]}</a> </p>
 <p><b>Duration:</b> ${eval(videoInfoFull["contentDetails"]["duration"][2:-1].replace("H","*3600+").replace("M","*60+"))} seconds</p>
 %if videoInfoFull.has_key("topicDetails"):
-<p><b>FreeBase Topics:</b>
+<p><b>FreeBase Topics: </b>
    %for item in  videoInfoFull["topicDetails"]["topicIds"]:
       &nbsp;
-      <a rel="tag" href="${item}">${item}</a><span id=${item}></span>;
-      <script src="https://www.googleapis.com/freebase/v1/topic${item}?filter=/type/object/name&callback=putFBname"></script>
+      <a rel="tag" href="${item}">${item}</a><span id=${item}></span>
+      <script src="https://www.googleapis.com/freebase/v1/topic${item}?filter=/type/object/name&callback=putFBname"></script>;
    %endfor
 </p>
 %endif
@@ -259,8 +262,8 @@ function putFBname(respuesta){
 %endif
 <h3><a href="/">Search more videos</a></h3>
 <hr>
-<em>If you find this site useful, please tweet about it, blog about it, or 
-add it to the your list of recommended websites.</em>
+<p><em>If you find this site useful, please tweet about it, blog about it, or 
+add it to the your list of recommended websites.</em></p>
 <p>Obviously, the more traffic -and online feedback- it gets, the more I will work on it
 </p>
 <p>(For instance, next step is to add also the language options for the comic/storyboard
