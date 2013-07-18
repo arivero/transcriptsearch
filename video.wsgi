@@ -32,14 +32,14 @@ from mako.lookup import TemplateLookup
 from mako import exceptions
 
 root = '/var/ytweb/wsgi-scripts/'
-port = 8000
-error_style = 'html' # select 'text' for plaintext error reporting
-
 
 def f_retry(f,*args, **kwargs):
        mtries, mdelay = 4,1 # make mutable
        while mtries > 0:
-         rv = f(*args, **kwargs)
+         try:
+           rv = f(*args, **kwargs)
+         except:
+           rv = [{"status":"500"},""]
          mtries -= 1
          if rv[0]["status"]!= "200" and rv[0]["status"]!='304':  
             time.sleep(mdelay)   #esto  espera tontamente tras el ultimo fallo, es una feature :-D 
@@ -74,19 +74,23 @@ lookup = TemplateLookup(directories=[root, root + 'templates','./'],
 
 def serve(environ, start_response):
     videoId=cgi.escape(environ["SCRIPT_URL"].split('/')[2])   #consider re.match for serious control
+
+    if len(videoId) <> 11:
+        start_response('404 Not Found',[])
+        return ["<body><p>Wrong ID <p> Please extract the ID from youtube URL</body>"]
+
     parsedQuery=cgi.parse_qs(environ["QUERY_STRING"])
 
-    httplib2.RETRIES=1 #el dfault es 2!!!
+    httplib2.RETRIES=4 #el dfault es 2, no 1!!!
     apihttp=httplib2.Http("/tmp/miAPIcache")  
     import socks
     from random import choice
-    #bien hecho: proxy list desde config y un try-catch para que siga sin proxy
+    #bien hecho faltaria un try-catch para que siga sin proxy
     http=httplib2.Http("/tmp/micache",
             proxy_info=httplib2.ProxyInfo(proxy_type=socks.PROXY_TYPE_HTTP,
             proxy_host=choice(PROXYLIST),
             proxy_rdns=True,
              proxy_port=3128))
-    headers = { } 
 
     apiThread=ThreadWithReturnValue(target=doApiHttp, args=(apihttp,URLCOMMANDVIDEO % (videoId,MIAPPKEY)))
     apiThread.start()
@@ -99,9 +103,9 @@ def serve(environ, start_response):
     regsearch=re.search('TTS_URL.*timedtext.(.*).,',contentMainYT)
     if regsearch is not None:
       ttsurl=urllib.unquote(regsearch.group(1).decode('unicode-escape').replace('\\/','/'))
-      respList,contentList=f_retry(http.request,"http://video.google.com/timedtext?"+ttsurl+"&type=list&tlangs=0&asrs=1")
+      respList,contentList=f_retry(http.request,"http://video.google.com/timedtext?"+ttsurl+"&type=list&tlangs=0&asrs=1",headers={'Accept-Language': 'en_US,en_UK,en'})
     else:
-      respList,contentList=f_retry(http.request,"http://video.google.com/timedtext?v=%s&type=list"%videoId,"GET")
+      respList,contentList=f_retry(http.request,"http://video.google.com/timedtext?v=%s&type=list"%videoId,headers={'Accept-Language': 'en_US,en_UK,en'})
     if (respList["status"] == "200" or respList["status"] == '304') and len(contentList) > 0: # and len(ET.fromstring(contentList))>0:
                                                   #if (contentInfo["contentDetails"]["caption"]=="true"):
        parsedList=ET.fromstring(contentList)
@@ -150,9 +154,9 @@ def serve(environ, start_response):
 
     resp,content=apiThread.join()
     if (resp["status"] != "200" and resp["status"] != "304") or len(json.loads(content)["items"])==0:
-        print resp
+        #print "Api Failed, we give to 404", resp
         start_response('404 Not Found',[])
-        return ["<body>no data now<p>Please try again in a few hours</body>"]
+        return ["<body>no data now, according YT API<p>Please try again in a few hours</body>"]
     contentInfo=json.loads(content)["items"][0]
 
     template=lookup.get_template("video.html")
@@ -166,15 +170,18 @@ def serve(environ, start_response):
     response_headers = [('Content-type', 'text/html;charset=UTF-8'),
                         ('Content-Length', str(len(output)))]
     if len(parsedTranscript) < 10:  #menos de 10 lineas, no indizar
-       response_headers.append(('robots','noindex,follow'));
-       response_headers.append(('X-Robots-Tag','noindex,noarchive,follow,notranslate,noimageindex'));
+       response_headers.append(('robots','noindex,follow'))
+       response_headers.append(('X-Robots-Tag','noindex,noarchive,follow,notranslate,noimageindex'))
     else:
-       response_headers.append(('X-Robots-Tag','index,follow,notranslate,noimageindex'));
+       response_headers.append(('X-Robots-Tag','index,follow,notranslate,noimageindex'))
+       response_headers.append(('Expires','15 Jun 2014 11:15'))
+       response_headers.append(('Cache-control:','public'))
     status = '200 OK'
     start_response(status, response_headers)
     return [output]
  
 if __name__ == '__main__':
+    port=8000
     import wsgiref.simple_server
     server = wsgiref.simple_server.make_server('', port, serve)
     print "Server listening on port %d" % port

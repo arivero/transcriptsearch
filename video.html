@@ -1,24 +1,31 @@
 ## -*- coding: utf-8 -*-
+<!DOCTYPE html>
 <html lang="${language}">
 <head>
 <title>${videoInfo["title"]} - Transcript</title>
-<link rel="canonical" href="/id/${videoId}?lang=${language}${'&kind=asr' if isASR else ''}">
-<link name="upstream" rel="author" href="https://github.com/arivero/transcriptsearch"/>
-<link name="website" rel="license" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
+<!--link href="/res/css/bootstrap.min.css" rel="stylesheet" media="screen" /-->
+<link href="/res/css/basic.css" rel="stylesheet" > 
+<link rel="canonical" href="/id/${videoId}?lang=${language}${'&kind=asr' if isASR else ''}" />
+<link name="upstream" rel="code-author" href="https://github.com/arivero/transcriptsearch"/>
+<link name="website" rel="code-license" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
 <link name="transcript_text_cc" rel=license href="http://creativecommons.org/licenses/by/3.0/"/>
 <link name="transcript_text_yt" rel=license href="http://www.youtube.com/t/terms">
 <meta name="creation_date" content="${videoInfo['publishedAt']}" />
 <base href="http://www.transcriptsearch.com.es/id/${videoId}" />
-<meta name="distribution" content="global"> 
+<meta name="distribution" content="global">
+<META HTTP-EQUIV="EXPIRES" CONTENT="12 Jul 2014 11:11">
 <link rel="original-source" href="http://www.youtube.com/watch?v=${videoId}" />
 <!--original source vease http://googlenewsblog.blogspot.com.es/2010/11/credit-where-credit-is-due.html 
 Habria que usar tambien description, channelId y channelTitle, como publishers  
 -->
 <meta property="og:video" content="http://www.youtube.com/v/${videoId}" /> 
 <meta property="og:type"  content="video" />
+%if len(transcript)>3 and transcript[0].text and transcript[1].text and transcript[-1].text:
+<meta name="description" content="${(transcript[0].text +" "+transcript[1].text +' (...)" '+transcript[-1].text).replace("\n"," ").replace('"','')}"/>
+%endif
 <meta name="twitter:description" content="${videoInfo["description"][:160]}..." />
 </head>
-<body>
+<body style="font-size:small">
 <!-- Google Tag Manager, and Also UA-80442-5 in Google Analytics-->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-FFM5D"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -30,9 +37,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
 <!-- AddThis Button END -->
-<div style="width:2em;height:2em;display:block;float:left"><small><a href="/">home</a></small></div>
+<div style="width:2em;height:2em;display:block;float:left"><small><a href="/"><i class="icon-search"></i>home</a></small></div>
 <center>
-<h2>Caption info for Youtube Video <a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></h2>
+<h4>Caption info for Youtube Video <a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></h4>
 <h1>${videoInfo["title"]} </h1>
 </center>
 <div style="float:right">
@@ -48,26 +55,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="addthis_button_gmail"></a>
 <a class="addthis_button_hotmail"></a>
 </div>
-<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
+<script async type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
 <!-- AddThis Button END -->
 <g:plusone></g:plusone>
 </div>
 <div style="float:right">
 <a rel="nofollow,alternate" title="In YT, look for transcript button, next to statistics button"
-href="http://www.youtube.com/watch?v=${videoId}"><button>See in YouTube</button></a>
+href="http://www.youtube.com/watch?v=${videoId}"><button class="btn">See in YouTube</button></a>
 %if storyboard_spec=="noUrl":
 <small></small>
 %else:
-<a rel="nofollow,alternate" href="/comic/${videoId}"><button>See comic-like layout</button></a>
+<a rel="nofollow,alternate" href="/comic/${videoId}"><button class="btn btn-primary">See comic-like layout</button></a>
 %endif
  &nbsp;
  </div>
 <div>
 <!-- aqui podriamos limitarnos a items del tipo track, por si acaso-->
-<p>Available:
+<dl class="dl-horizontal">
 %for item in trList:
-&nbsp; ${item.attrib["name"]} \
-<a name="${item.attrib["name"]}" \
+<dt>&nbsp; ${item.attrib["name"]}</dt> \
+<dd><a name="${item.attrib["name"]}" \
 %if not ("kind" in item.attrib):
 rel="alternate" hreflang="${item.attrib["lang_code"]}" \
 %endif
@@ -77,21 +84,37 @@ ${item.attrib["lang_translated"]}\
 (${item.attrib["kind"]}!!)\
 %endif
 %if "lang_default" in item.attrib:
-(default)\
+ (default)\
 %endif
-</a>
+</a></dd>
 %endfor
-</p>
+</dl>
 <h3 style="">Transcript <sup>(*)</sup></h3>
 <div style="display:block;float:right">
 %if len(transcript)>50:
 <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <ins class="adsbygoogle"
-     style="display:inline-block;width:180px;height:90px"
+     style="display:inline-block;width:200px;height:90px"
      data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="4638277394"></ins>
+     data-ad-slot="8445708198"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<script type="text/javascript">
+ch_fluidH = 1;
+ch_nump = "2";
+ch_client = "arivero";
+ch_width = 200;
+ch_height = "auto";
+ch_type = "mpu";
+ch_sid = "Chitika Default";
+ch_color_site_link = "0000CC";
+ch_color_title = "0000CC";
+ch_color_border = "FFFFFF";
+ch_color_text = "000000";
+ch_color_bg = "F2F2F2";
+</script>
+<script src="http://scripts.chitika.net/eminimalls/amm.js" type="text/javascript">
 </script>
 <hr>
 %endif
@@ -103,9 +126,20 @@ ${item.attrib["lang_translated"]}\
 <span \
 %for key in textline.attrib: 
 ${key}=${textline.attrib[key]} \
-%endfor 
-info="${textline.attrib}"></span> ${textline.text} <br/>
+%endfor
+%if textline.text<>None: 
+ > ${textline.text} </span>\
+%else:
+ > &nbsp; </span>\
+%endif
+%if textline.text<>None and len(textline.text)>0 and textline.text[-1]=="." :
+</p>
+<p style="text-align:left; display:block; margin-left:auto; margin-right: auto; font-family:monospace ">\
+%else:
+  <br/>
+%endif
 %if (i==60):
+%if storyboard_spec=="noUrl":
 <span style="padding:2px;margin-left:auto;margin-right:auto;width:728px;">
 <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <ins class="adsbygoogle"
@@ -117,6 +151,39 @@ info="${textline.attrib}"></span> ${textline.text} <br/>
 </script>
 </span>
 <br/>
+%else:
+<span style="padding:2px;margin-left:auto;margin-right:auto;width:468px;">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- NextPage2 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:468px;height:60px"
+     data-ad-client="ca-pub-7459812506874928"
+     data-ad-slot="3875907798"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<br/>
+%endif
+%endif
+%if (i==120):
+</p>
+<script type="text/javascript">
+ch_client = "arivero";
+ch_width = 550;
+ch_height = 120;
+ch_type = "mpu";
+ch_sid = "Chitika Default";
+ch_color_site_link = "0000CC";
+ch_color_title = "0000CC";
+ch_color_border = "FFFFFF";
+ch_color_text = "000000";
+ch_color_bg = "FFFFFF";
+</script>
+<script src="http://scripts.chitika.net/eminimalls/amm.js" type="text/javascript">
+</script>
+<br/>
+<p style="text-align:left; display:block; margin-left:auto; margin-right: auto; font-family:monospace ">\
 %endif
 %endfor
 </p>
@@ -129,7 +196,7 @@ info="${textline.attrib}"></span> ${textline.text} <br/>
 %endif 
 
 
-%if len(transcript) > 300:
+%if len(transcript) > 200 or len(transcript)<55:
 <div style="padding:8px;">
 <ins class="adsbygoogle"
      style="display:inline-block;width:970px;height:90px"
@@ -185,6 +252,7 @@ window.onload=function(){
     var targetsrc=s.url.replace('$M', sheet) + "?sigh=" + s.sigh;
     var imagen=document.createElement("img");   // Mucho de lo que definimos aqui deberia ir a una CSS class.
     imagen.setAttribute("src",targetsrc);
+    imagen.style["max-width"]="none";
     imagen.style.margin="0px 0px "+(-1)*(s.rows-1)*s.height+"px 0px";  //top right bottom left
     //imagen.style.margin=(-1)*s.height+"px 0px "+(-1)*(s.rows-2)*s.height+"px "+(-1)*s.width*(s.cols-1)+"px";
     imagen.style.position="absolute";
@@ -210,10 +278,11 @@ window.onload=function(){
     document.getElementById("transcript").style["min-height"]=2*s.height+"px"
     //ahora, ajustamos el espaciado
     window.onresize=function(){
-              var altura=document.getElementById("transcript").offsetHeight; // o clientHeight sin los scroll ni border, o scrollHeight
-              var alturasb=document.getElementById("sb").offsetHeight;
-              var k=document.getElementById("transcript").previoSize / altura;
-              if (k<0.99 || k > 1.01) {
+              var altura=document.getElementById("transcript").scrollHeight; //  offsetH, o clientHeight sin los scroll ni border, o scrollHeight
+              var alturasb=document.getElementById("sb").scrollHeight;
+              //var k=document.getElementById("transcript").previoSize / altura;
+              var k=alturasb/altura;
+              if (k<0.95 || k > 1.05) {
                  var children=document.getElementById('sb').children;
                  alturaelem=s.height;
                  totalelems=children.length;
@@ -222,7 +291,7 @@ window.onload=function(){
                      children[i].style.top=i*(altura)/(totalelems)+"px";
                      //console.log(i,i*(altura-alturaelem)/(totalelems)+"px");
                     }
-                 document.getElementById("sb").style.height=altura;
+                 document.getElementById("sb").style.height=altura+"px";
                  document.getElementById("transcript").previoSize=altura;
                  setTimeout(window.onresize,1);  //scope milagroso: usa el s del metodo donde lo hemos definido, pero el onresize nuevo
               } ; 
@@ -268,5 +337,6 @@ add it to the your list of recommended websites.</em></p>
 </p>
 <p>(For instance, next step is to add also the language options for the comic/storyboard
 view) </p>
+<!--script async src="/res/js/bootstrap.min.js"></script-->
 </body>
 </html>
