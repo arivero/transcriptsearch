@@ -1,6 +1,10 @@
 ## -*- coding: utf-8 -*-
 <html>
 <head>
+<%
+import re
+t={'hora':3600, 'min':60,'sec':1}
+%>
 <link rel="license-code" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
 %if videoInfoFull["status"]["license"]=="creativeCommon":
 <meta name="robots" content="follow,index,noimageindex"/> 
@@ -105,7 +109,7 @@ window.onload=function(){
     s.countOnLastSheet = ((s.count - 1) % s.sheetSize) + 1;
     // 
     var numerofotogramas=s.count
-    var lapso=${eval(videoInfoFull["contentDetails"]["duration"][2:].replace("H","*3600+").replace("M","*60+0").replace("S","*1"))}/(s.count-1); 
+    var lapso=${sum(t[x] * float(y or 0) for x,y in re.compile("PT((?P<hora>[0-9.]+?)H)?((?P<min>[0-9.]+?)M)?((?P<sec>[0-9.]+?)S)?").match(videoInfoFull["contentDetails"]["duration"]).groupdict().items())}/(s.count-1); 
     lineas=document.getElementById('transcriptpar').children;
     var totalanuncios=0;
     for (var i = 0; i < lineas.length; i++) {

@@ -21,7 +21,7 @@ import ConfigParser
 config=ConfigParser.RawConfigParser()
 config.read(["/etc/configfile.dat"])
 MIAPPKEY=config.get("keys","MIAPPKEY")
-URLCOMMAND="https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(title,description,thumbnails))&key=%s&maxResults=12&videoCaption=closedCaption&type=video&safeSearch=none&order=date&regionCode=TW"
+URLCOMMAND="https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(title,description,thumbnails))&key=%s&maxResults=42&videoCaption=closedCaption&type=video&safeSearch=none&order=date&regionCode=TW"
 #order=viewCount, date, relevance, rating 
 #import cgi, re, os, posixpath, mimetypes
 from mako.lookup import TemplateLookup

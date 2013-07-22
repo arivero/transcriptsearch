@@ -1,6 +1,10 @@
 ## -*- coding: utf-8 -*-
 <!DOCTYPE html>
 <html lang="${language}">
+<%
+import re;
+t={'hora':3600, 'min':60,'sec':1};
+%>
 <head>
 <title>${videoInfo["title"]} - Transcript</title>
 <meta name="viewport" content="width=980,maximum-scale=6.0" />
@@ -332,7 +336,8 @@ function putFBname(respuesta){
 <p><b>VideoID</b>: YT/<a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></p>
 <p><b>License</b>: <i>${videoInfoFull["status"]["license"]}</i> from channel <a href="http://www.youtube.com/channel/${videoInfo['channelId']}">YT:user:${videoInfo['channelTitle']}</a></p>
 <p><b>Youtube CategoryID</b>: <a rel="tag" href="/${videoInfo['categoryId']}">${videoInfo["categoryId"]}</a> </p>
-<p><b>Duration:</b> ${videoInfoFull["contentDetails"]["duration"]} = ${eval(videoInfoFull["contentDetails"]["duration"][2:].replace("H","*3600+").replace("M","*60+0").replace("S","*1"))} seconds</p>
+<p><b>Duration:</b> ISO 8601 ${videoInfoFull["contentDetails"]["duration"]} = \
+${sum(t[x] * float(y or 0) for x,y in re.compile("PT((?P<hora>[0-9.]+?)H)?((?P<min>[0-9.]+?)M)?((?P<sec>[0-9.]+?)S)?").match(videoInfoFull["contentDetails"]["duration"]).groupdict().items())} seconds</p>
 %if videoInfoFull.has_key("topicDetails"):
 <p><b>FreeBase Topics: </b>
    %for item in  videoInfoFull["topicDetails"]["topicIds"]:
