@@ -332,7 +332,7 @@ function putFBname(respuesta){
 <p><b>VideoID</b>: YT/<a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></p>
 <p><b>License</b>: <i>${videoInfoFull["status"]["license"]}</i> from channel <a href="http://www.youtube.com/channel/${videoInfo['channelId']}">YT:user:${videoInfo['channelTitle']}</a></p>
 <p><b>Youtube CategoryID</b>: <a rel="tag" href="/${videoInfo['categoryId']}">${videoInfo["categoryId"]}</a> </p>
-<p><b>Duration:</b> ${eval(videoInfoFull["contentDetails"]["duration"][2:-1].replace("H","*3600+").replace("M","*60+"))} seconds</p>
+<p><b>Duration:</b> ${videoInfoFull["contentDetails"]["duration"]} = ${eval(videoInfoFull["contentDetails"]["duration"][2:].replace("H","*3600+").replace("M","*60+0").replace("S","*1"))} seconds</p>
 %if videoInfoFull.has_key("topicDetails"):
 <p><b>FreeBase Topics: </b>
    %for item in  videoInfoFull["topicDetails"]["topicIds"]:

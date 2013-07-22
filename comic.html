@@ -105,7 +105,7 @@ window.onload=function(){
     s.countOnLastSheet = ((s.count - 1) % s.sheetSize) + 1;
     // 
     var numerofotogramas=s.count
-    var lapso=${eval(videoInfoFull["contentDetails"]["duration"][2:-1].replace("H","*3600+").replace("M","*60+"))}/(s.count-1); 
+    var lapso=${eval(videoInfoFull["contentDetails"]["duration"][2:].replace("H","*3600+").replace("M","*60+0").replace("S","*1"))}/(s.count-1); 
     lineas=document.getElementById('transcriptpar').children;
     var totalanuncios=0;
     for (var i = 0; i < lineas.length; i++) {
