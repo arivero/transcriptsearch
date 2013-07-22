@@ -25,7 +25,6 @@ config=ConfigParser.RawConfigParser()
 config.read(["/etc/configfile.dat"])
 MIAPPKEY=config.get("keys","MIAPPKEY")
 PROXYLIST=config.get("keys","PROXYLIST").split(',')
-URLCOMMANDFORRELATEDVIDEOS="https://www.googleapis.com/youtube/v3/search?part=snippet&key=%s&maxResults=5&videoCaption=closedCaption&type=video&safeSearch=none&order=viewCount&relatedToVideoId=%s&fields=etag,items(id/videoId,snippet/title)&videoLicense=creativeCommon"
 URLCOMMANDVIDEO="https://www.googleapis.com/youtube/v3/videos?id=%s&part=snippet,contentDetails,status,topicDetails,recordingDetails&fields=etag,items(snippet(title,description,categoryId,publishedAt,channelTitle,channelId),contentDetails/caption,contentDetails/duration,status(uploadStatus,license,embeddable),recordingDetails(locationDescription,recordingDate),topicDetails/topicIds)&key=%s"
 
 from mako.lookup import TemplateLookup

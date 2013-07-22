@@ -1,8 +1,12 @@
 ## -*- coding: utf-8 -*-
 <html>
 <head>
-<link rel="license" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
-<meta name="robots" content="follow, noindex,noimageindex"/> 
+<link rel="license-code" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"/>
+%if videoInfoFull["status"]["license"]=="creativeCommon":
+<meta name="robots" content="follow,index,noimageindex"/> 
+%else:
+<meta name="robots" content="follow,noindex,noimageindex"/>
+%endif
 <title>${videoInfo["title"]} - Storyboard</title>
 </head>
 <body>
@@ -17,31 +21,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 
 <center>
-<h2>Printable version of video <a rel="alternate" href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a>@youtube</h2>
+<h2>video <a rel="alternate" href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a>@youtube</h2>
 <h1>${videoInfo["title"]} </h1>
+<h4>from work published by youtube channel <a href="http://www.youtube.com/channel/${videoInfo['channelId']}">${videoInfo['channelTitle']}</a>.  </h4>
 </center>
 <div style="float:right">
-<a href="https://twitter.com/share" class="twitter-share-button" data-lang="es">Twittear</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+%if videoInfoFull["status"]["license"]=="creativeCommon":
 <g:plusone></g:plusone>
 <!-- AddThis Button BEGIN -->
 <div style="display:inline-block" class="addthis_toolbox addthis_default_style addthis_16x16_style">
 <a class="addthis_button_facebook"></a>
 <a class="addthis_button_reddit"></a>
 <a class="addthis_button_tuenti"></a>
-<!--a class="addthis_button_pdfonline"></a>
-<a class="addthis_button_pdfmyurl"></a-->
+<a class="addthis_button_twitter"></a>
 <a class="addthis_button_yahoomail"></a>
 <a class="addthis_button_gmail"></a>
 <a class="addthis_button_hotmail"></a>
 </div>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
 <!-- AddThis Button END -->
-
+Licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC by / 3.0</a>
+%else:
+<small></small>
+%endif
 </div>
-<div style="float:right"><a rel="alternate" href="/id/${videoId}"><button>See as continuous transcript</button></a> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+<div><a rel="alternate" href="/id/${videoId}"><button>See as continuous transcript</button></a> &nbsp; &nbsp; &nbsp; &nbsp; </div>
 
-<h3 style="">Default Transcript</h3>
+<h3 style=""></h3>
+
 <!--transcript text surely under CC, youtube or similar licenses -->
 <div id="sb"></div>
 <div id="transcript" style="text-align:center; width:90%; display:block; margin-left:auto; margin-right: auto; ">
@@ -66,6 +73,7 @@ info="${textline.attrib}"> ${textline.text} <br/></span>
   })();
 </script>
 <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script src="/res/js/qrcode.js"></script>
 <script>
 window.onload=function(){
 //code from http://userscripts.org/scripts/review/164573
@@ -121,18 +129,27 @@ window.onload=function(){
          document.getElementById('sb').appendChild(vineta);
          if (totalanuncios < 3 && Math.random()< 1/(9)  ) {
          var publi=document.createElement("div");
-         publi.setAttribute("style","border-width: 2px; min-height:125px; margin-left:auto; margin-right:auto;zoom:1; *display:inline-block;");
+         publi.setAttribute("style","border-width: 2px; min-height:125px; text-align:center; margin-left:auto; margin-right:auto;zoom:1; *display:inline-block;");
          publi.style.position="relative";
          publi.style.width=escala*s.width+12;
          publi.style.display="inline-block";
-         publi.style.verticalAlign="bottom";
-         publi.style.marginBottom='1%';
+         //publi.style.verticalAlign="bottom";
+         publi.style.marginBottom='0.5%';
+         publi.style.marginTop='0.5%';
          document.getElementById('sb').appendChild(publi);
-         publi.innerHTML= '<div style="margin-left:auto;margin-right:auto;width:300px;"><ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px;" data-ad-client="ca-pub-7459812506874928" data-ad-slot="1405609398"></ins></div>';
+         if (escala*s.width > 250) {
+         publi.style.width=Math.max(320,escala*s.width+12);
+         publi.innerHTML= '<ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px;" data-ad-client="ca-pub-7459812506874928" data-ad-slot="1405609398"></ins>';
          (adsbygoogle = window.adsbygoogle || []).push({});
+         } else {
+          publi.style.width=Math.max(190,escala*s.width+12);
+          publi.innerHTML= '<ins class="adsbygoogle" style="display:inline-block;width:180px;height:150px" data-ad-client="ca-pub-7459812506874928" data-ad-slot="6550172596"></ins>';
+          (adsbygoogle = window.adsbygoogle || []).push({});
+         };
          totalanuncios++;
            }
-       }
+       } ;
+         var qr=document.createElement("div");
     } 
    
     var vinetas=document.getElementById('sb').children; 
@@ -183,6 +200,11 @@ window.onload=function(){
      }
 }
 </script>
-
+<hr>
+<center><a href="/res/about.html">About this site</a>
+<small> | The code for this webservice is available under Affero AGPLv3 license in
+repository <a href="https://github.com/arivero/transcriptsearch">github:arivero/transcriptsearch</a>.
+</small>
+</center>
 </body>
 </html>
