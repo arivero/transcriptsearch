@@ -21,7 +21,7 @@ import ConfigParser
 config=ConfigParser.RawConfigParser()
 config.read(["/etc/configfile.dat"])
 MIAPPKEY=config.get("keys","MIAPPKEY")
-URLCOMMAND="https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(title,description,thumbnails))&key=%s&maxResults=42&videoCaption=closedCaption&type=video&safeSearch=none&order=rating"
+URLCOMMAND="https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(title,description,thumbnails))&key=%s&maxResults=42&videoCaption=closedCaption&type=video&safeSearch=none&order=date&regionCode=TW"
 #order=viewCount, date, relevance, rating 
 #import cgi, re, os, posixpath, mimetypes
 from mako.lookup import TemplateLookup
@@ -63,7 +63,7 @@ def serve(environ, start_response):
        respuesta=json.loads(content)
     if resp["status"] != "200" or len(respuesta["items"])==0 :
        #print url
-       catname=" Youtube"
+       catname=""
        resp,content=http.request(URLCOMMAND % MIAPPKEY)
        respuesta=json.loads(content)
     template=lookup.get_template("index.html")

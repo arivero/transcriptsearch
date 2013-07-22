@@ -26,6 +26,20 @@ Habria que usar tambien description, channelId y channelTitle, como publishers
 <meta name="twitter:description" content="${videoInfo["description"][:160]}..." />
 </head>
 <body style="font-size:small">
+<!-- AddThis Smart Layers BEGIN -->
+<!-- Go to http://www.addthis.com/get/smart-layers to customize -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51d9946d1552ca72"></script>
+<script type="text/javascript">
+  addthis.layers({
+    'theme' : 'transparent',
+    'share' : {
+      'position' : 'left',
+      'numPreferredServices' : 4
+    }   
+  });
+</script>
+<!-- AddThis Smart Layers END -->
+<div itemscope itemtype="http://schema.org/Article">
 <!-- Google Tag Manager, and Also UA-80442-5 in Google Analytics-->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-FFM5D"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -39,8 +53,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- AddThis Button END -->
 <div style="width:2em;height:2em;display:block;float:left"><small><a href="/"><i class="icon-search"></i>home</a></small></div>
 <center>
-<h4>Caption info for Youtube Video <a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></h4>
-<h1>${videoInfo["title"]} </h1>
+<h4><span itemprop="alternativeHeadline">Caption info for Youtube Video <a rel="alternate"  href="http://www.youtube.com/watch?v=${videoId}">${videoId}</a></span></h4>
+<h1><span itemprop="name">${videoInfo["title"]}</span></h1>
 </center>
 <div style="float:right">
 <!-- AddThis Button BEGIN -->
@@ -62,7 +76,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div style="float:right">
 <a rel="nofollow,alternate" title="In YT, look for transcript button, next to statistics button"
 href="http://www.youtube.com/watch?v=${videoId}"><button class="btn">See in YouTube</button></a>
-%if storyboard_spec=="noUrl":
+%if storyboard_spec=="noUrl" or videoInfoFull["status"]["license"]<>"creativeCommon":
 <small></small>
 %else:
 <a rel="nofollow,alternate" href="/comic/${videoId}"><button class="btn btn-primary">See comic-like layout</button></a>
@@ -73,8 +87,8 @@ href="http://www.youtube.com/watch?v=${videoId}"><button class="btn">See in YouT
 <!-- aqui podriamos limitarnos a items del tipo track, por si acaso-->
 <dl class="dl-horizontal">
 %for item in trList:
-<dt>&nbsp; ${item.attrib["name"]}</dt> \
-<dd><a name="${item.attrib["name"]}" \
+<dt>&nbsp; ${item.attrib["name"] if "name" in item.attrib else ''}</dt> \
+<dd><a name="${item.attrib["name"] if "name" in item.attrib else ''}" \
 %if not ("kind" in item.attrib):
 rel="alternate" hreflang="${item.attrib["lang_code"]}" \
 %endif
@@ -89,7 +103,7 @@ ${item.attrib["lang_translated"]}\
 </a></dd>
 %endfor
 </dl>
-<h3 style="">Transcript <sup>(*)</sup></h3>
+<h3 style="margin-left:4em">Transcript <sup>(*)</sup></h3>
 <div style="display:block;float:right">
 %if len(transcript)>50:
 <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -120,7 +134,7 @@ ch_color_bg = "F2F2F2";
 %endif
 <div id="sb"> </div>
 </div>
-<div id="transcript" style="text-align:center; width:90%; display:block; margin-left:auto; margin-right: auto; ">
+<div id="transcript" itemprop="articleBody" style="text-align:center; width:90%; display:block; margin-left:auto; margin-right: auto; ">
 <p style="text-align:left; display:block; margin-left:auto; margin-right: auto; font-family:monospace ">
 %for i, textline in enumerate(transcript):
 <span \
@@ -310,13 +324,14 @@ function putFBname(respuesta){
  document.write(span.innerHTMLprev);
 }
 </script>
+<p><b>License</b>: <i>${videoInfoFull["status"]["license"]}</i> from channel <a href="http://www.youtube.com/channel/${videoInfo['channelId']}">YT:user:${videoInfo['channelTitle']}</a></p>
 <p><b>Youtube CategoryID</b>: <a rel="tag" href="/${videoInfo['categoryId']}">${videoInfo["categoryId"]}</a> </p>
 <p><b>Duration:</b> ${eval(videoInfoFull["contentDetails"]["duration"][2:-1].replace("H","*3600+").replace("M","*60+"))} seconds</p>
 %if videoInfoFull.has_key("topicDetails"):
 <p><b>FreeBase Topics: </b>
    %for item in  videoInfoFull["topicDetails"]["topicIds"]:
       &nbsp;
-      <a rel="tag" href="${item}">${item}</a><span id=${item}></span>
+      <a rel="tag" itemprop="keywords" href="${item}">${item}</a><span itemprop="keywords" id=${item}></span>
       <script src="https://www.googleapis.com/freebase/v1/topic${item}?filter=/type/object/name&callback=putFBname"></script>;
    %endfor
 </p>
@@ -326,7 +341,7 @@ function putFBname(respuesta){
 <p><b>Recording Location:</b> ${videoInfoFull["recordingDetails"]["locationDescription"]}</p>
    %endif
    %if videoInfoFull["recordingDetails"].has_key("recordingDate"):
-<p><b>Recording Date::</b> ${videoInfoFull["recordingDetails"]["recordingDate"]}</p>
+<p><b>Recording Date::</b> <span itemprop="dateCreated">${videoInfoFull["recordingDetails"]["recordingDate"]}</span></p>
    %endif
 %endif
 <h3><a href="/">Search more videos</a></h3>
@@ -338,5 +353,10 @@ add it to the your list of recommended websites.</em></p>
 <p>(For instance, next step is to add also the language options for the comic/storyboard
 view) </p>
 <!--script async src="/res/js/bootstrap.min.js"></script-->
+<span itemprop="provider" itemscope itemtype="http://schema.org/Person">
+   <link itemprop="url" href="http://www.youtube.com/user/${videoInfo['channelTitle']}">
+</span>
+<meta itemprop="datePublished" content="${videoInfo['publishedAt']}"/>
+</div> <!--end itemscope-->
 </body>
 </html>

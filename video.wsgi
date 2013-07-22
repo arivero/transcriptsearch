@@ -26,7 +26,7 @@ config.read(["/etc/configfile.dat"])
 MIAPPKEY=config.get("keys","MIAPPKEY")
 PROXYLIST=config.get("keys","PROXYLIST").split(',')
 URLCOMMANDFORRELATEDVIDEOS="https://www.googleapis.com/youtube/v3/search?part=snippet&key=%s&maxResults=5&videoCaption=closedCaption&type=video&safeSearch=none&order=viewCount&relatedToVideoId=%s&fields=etag,items(id/videoId,snippet/title)&videoLicense=creativeCommon"
-URLCOMMANDVIDEO="https://www.googleapis.com/youtube/v3/videos?id=%s&part=snippet,contentDetails,topicDetails,recordingDetails&fields=etag,items(snippet(title,description,categoryId,publishedAt),contentDetails/caption,contentDetails/duration,recordingDetails(locationDescription,recordingDate),topicDetails/topicIds)&key=%s"
+URLCOMMANDVIDEO="https://www.googleapis.com/youtube/v3/videos?id=%s&part=snippet,contentDetails,status,topicDetails,recordingDetails&fields=etag,items(snippet(title,description,categoryId,publishedAt,channelTitle,channelId),contentDetails/caption,contentDetails/duration,status(uploadStatus,license,embeddable),recordingDetails(locationDescription,recordingDate),topicDetails/topicIds)&key=%s"
 
 from mako.lookup import TemplateLookup
 from mako import exceptions
@@ -97,6 +97,7 @@ def serve(environ, start_response):
 
     import urllib
     import re
+    lang,trname,kind="","",""
     resp,contentMainYT=f_retry(http.request,"http://www.youtube.com/watch?v=%s"%videoId)
     #we could parse for #<meta name="keywords" content= too, here
     grepstoryboard=re.search('storyboard_spec...(.[^\"]*.)',contentMainYT)
@@ -109,7 +110,6 @@ def serve(environ, start_response):
     if (respList["status"] == "200" or respList["status"] == '304') and len(contentList) > 0: # and len(ET.fromstring(contentList))>0:
                                                   #if (contentInfo["contentDetails"]["caption"]=="true"):
        parsedList=ET.fromstring(contentList)
-       lang,trname,kind="","",""
        if parsedQuery.get('lang')<>None and len(parsedQuery.get('lang'))>0:
          for x in parsedList:
            if x.attrib["lang_code"]==parsedQuery.get('lang')[0]:  #and name, perhaps, in the future
@@ -154,15 +154,19 @@ def serve(environ, start_response):
 
     resp,content=apiThread.join()
     if (resp["status"] != "200" and resp["status"] != "304") or len(json.loads(content)["items"])==0:
-        #print "Api Failed, we give to 404", resp
-        start_response('404 Not Found',[])
-        return ["<body>no data now, according YT API<p>Please try again in a few hours</body>"]
+        if re.search('unavailable-message',contentMainYT):  #buscar unavailable-message
+           start_response('410 Gone',[])
+           return ["<body>no data now<p> Surely the video has been deleted. Check the video page for more info</body>"]
+        else:
+           print "Api Failed, we give to 408", resp,content
+           start_response('408 Request Timeout',[])   #or 404 Not Found or 410 Gone si queremos que purgue el recurso
+           return ["<body>no data now, according YT API<p>Please try again in a few hours</body>"]
     contentInfo=json.loads(content)["items"][0]
-
+    #print contentInfo["status"]
     template=lookup.get_template("video.html")
     output=template.render(videoInfo=contentInfo["snippet"],videoInfoFull=contentInfo,
                            videoId=videoId,
-                           language=lang,
+                           language=lang if lang <> "" else "en",
                            isASR= True if kind=="asr" else False,
                            storyboard_spec=json.loads('"noUrl"' if grepstoryboard == None else grepstoryboard.group(1) ),
                            transcript=parsedTranscript,

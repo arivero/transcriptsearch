@@ -22,8 +22,21 @@
 <meta name="description" content="A text browser for youtube.
  It shows the transcript of the video instead of
 running the player">
+<!-- AddThis Smart Layers BEGIN -->
+<!-- Go to http://www.addthis.com/get/smart-layers to customize -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51d9946d1552ca72"></script>
+<script type="text/javascript">
+  addthis.layers({
+    'theme' : 'transparent',
+    'share' : {
+      'position' : 'right',
+      'numPreferredServices' : 6
+    }   
+  });
+</script>
+<!-- AddThis Smart Layers END -->
 </head>
-<body><center>
+<body style="margin-right:3em;margin-left:1em;"><center>
 <h1>Search for video captions</h1>
 <p>This engine allows you to search in the transcripts of 
 video services (currently, only youtube...) </p>
@@ -40,18 +53,20 @@ video services (currently, only youtube...) </p>
 
 %if len(items)>0:
 %if categoria=="": 
-<h3>You can also browse the captions of popular videos:</h3>
+<h3>You can also browse the captions of popular or recent videos:</h3>
 %else:
 <h3>Here are some videos from ${categoria}:</h3>
 %endif
 %else:
-<h3>There are not highly rated videos in ${categoria} just now</h3>
+<h3>There are not videos in ${categoria} just now</h3>
 %endif
 <table>
 <tr>
 %for i, entry in enumerate(items):  
 <td>
-<img src="${entry["snippet"]["thumbnails"]["default"]["url"]}"/>  
+%if categoria <> "" :
+<img name="${entry["id"]["videoId"]}" src="${entry["snippet"]["thumbnails"]["default"]["url"]}"/>  
+%endif
 </td>
 <td>
 <p><a href=/id/${entry["id"]["videoId"]} title="${entry["snippet"]["title"]}">
@@ -97,13 +112,8 @@ ${entry["snippet"]["title"]}</a></p>
 
 </script>
 <hr>
-<em>If you find this site useful, please tweet about it, blog about it, or 
-add it to the your list of recommended websites.</em>
-<p>Obviously, the more traffic -and online feedback- it gets, the more interest I will put to kept it
-running</p>
-<hr>
-<center>
-<small>The code for this website is available under Affero AGPLv3 license in
+<center><a href="/res/about.html">About this site</a>
+<small> | The code for this webservice is available under Affero AGPLv3 license in
 repository <a href="https://github.com/arivero/transcriptsearch">github:arivero/transcriptsearch</a>.
 </small>
 </center>
