@@ -177,7 +177,7 @@ def serve(environ, start_response):
        response_headers.append(('X-Robots-Tag','noindex,noarchive,follow,notranslate,noimageindex'))
     else:
        response_headers.append(('X-Robots-Tag','index,follow,notranslate,noimageindex'))
-       response_headers.append(('Expires','15 Jun 2014 11:15'))
+       response_headers.append(('Expires','29 Jun 2014 11:15'))
        response_headers.append(('Cache-control:','public'))
     status = '200 OK'
     start_response(status, response_headers)

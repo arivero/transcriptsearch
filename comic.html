@@ -14,6 +14,7 @@ t={'hora':3600, 'min':60,'sec':1}
 <title>${videoInfo["title"]} - Storyboard</title>
 </head>
 <body>
+<input type="hidden" name="IL_IN_TAG" value="1"/>
 <!-- Google Tag Manager, and Also UA-80442-5 in Google Analytics-->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-FFM5D"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -119,7 +120,7 @@ window.onload=function(){
        lineas[i].className="dialogodefotograma"+n;  //o classList.add("") si tiene ya otra clase
        if (document.getElementById('fotograma'+n)==null) 
        { var vineta=document.createElement("div");
-         vineta.setAttribute("style","border-width: 2px; border-style: solid; zoom:1; *display:inline;" ); //IE hack
+         vineta.setAttribute("style","border-width: 2px; zoom:1; *display:inline;" ); //IE hack
          vineta.indeximagen=n;
          var imagen = creaimagen(n)
          vineta.appendChild(imagen);
@@ -129,7 +130,7 @@ window.onload=function(){
          vineta.style.width=escala*s.width+12;
          //vineta.style.cssFloat="left";
          vineta.style.display="inline-block";
-         vineta.style.verticalAlign="top"; //"middle";
+         vineta.style.verticalAlign="text-top"; //"middle" or "top";
          document.getElementById('sb').appendChild(vineta);
          if (totalanuncios < 3 && Math.random()< 1/(9)  ) {
          var publi=document.createElement("div");
@@ -137,11 +138,11 @@ window.onload=function(){
          publi.style.position="relative";
          publi.style.width=escala*s.width+12;
          publi.style.display="inline-block";
-         //publi.style.verticalAlign="bottom";
+         publi.style.verticalAlign="text-top"; //"middle" or "top";
          publi.style.marginBottom='0.5%';
          publi.style.marginTop='0.5%';
          document.getElementById('sb').appendChild(publi);
-         if (escala*s.width > 250) {
+         if (escala*s.width > 250 && totalanuncios==1) {  //this is because of google limits
          publi.style.width=Math.max(320,escala*s.width+12);
          publi.innerHTML= '<ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px;" data-ad-client="ca-pub-7459812506874928" data-ad-slot="1405609398"></ins>';
          (adsbygoogle = window.adsbygoogle || []).push({});
@@ -210,5 +211,20 @@ window.onload=function(){
 repository <a href="https://github.com/arivero/transcriptsearch">github:arivero/transcriptsearch</a>.
 </small>
 </center>
+<!-- InfoLinks-->
+<script type="text/javascript">
+var infolinks_pid = 1806061;
+var infolinks_wsid = 0;
+</script>
+<script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script>
+<!-- Kontera(TM);-->
+<script type='text/javascript'>
+var dc_AdLinkColor = 'blue' ; 
+var dc_PublisherID = 228230 ; 
+ 
+</script>
+<script type='text/javascript' src='http://kona.kontera.com/javascript/lib/KonaLibInline.js'>
+</script>
+<!-- end Kontera(TM) --> 
 </body>
 </html>
