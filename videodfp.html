@@ -42,6 +42,33 @@ window.google_analytics_uacct = "UA-80442-5";
   ga('send', 'pageview');
 
 </script>
+
+
+<script type='text/javascript'>
+var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+var gads = document.createElement('script');
+gads.async = true;
+gads.type = 'text/javascript';
+var useSSL = 'https:' == document.location.protocol;
+gads.src = (useSSL ? 'https:' : 'http:') +
+'//www.googletagservices.com/tag/js/gpt.js';
+var node = document.getElementsByTagName('script')[0];
+node.parentNode.insertBefore(gads, node);
+})();
+</script>
+ 
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+googletag.defineSlot('/97804370/dfpFoot', [[728, 90], [970, 90]], 'div-gpt-ad-1375728766120-0').addService(googletag.pubads());
+googletag.defineSlot('/97804370/dfpHeader', [[250, 250], [300, 250], [320, 50], [336, 280]], 'div-gpt-ad-1375728766120-1').addService(googletag.pubads());
+googletag.defineSlot('/97804370/dfpSide', [[120, 240], [125, 125], [120, 600], [160, 600], [180, 150]], 'div-gpt-ad-1375728766120-2').addService(googletag.pubads());
+googletag.pubads().enableSingleRequest();
+googletag.enableServices();
+});
+</script>
+
 </head>
 <body style="font-size:small;max-width:980px;margin-left:auto ;margin-right:auto">
 <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -62,13 +89,14 @@ window.google_analytics_uacct = "UA-80442-5";
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=undefined"></script>
 <!-- AddThis Button END -->
 <div style="width:2em;height:2em;display:block;float:left"><small><a href="/"><i class="icon-search"></i>home</a></small></div>
-<div  style="display:block;float:left;margin-right:0.2em;margin-top:1.1em"><ins class="adsbygoogle"
-     style="display:inline-block;width:336px;height:280px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="8852347394"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
+<div  style="display:block;float:left;margin-right:0.2em;margin-top:4.1em">
+<!-- dfpHeader -->
+<div id='div-gpt-ad-1375728766120-1'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1375728766120-1'); });
 </script>
+</div>
+
 </div>
 <div id="rightheadbox" style="display:block;margin-left:364px;">
 <center>
@@ -124,38 +152,18 @@ ${item.attrib["lang_translated"]}\
 </div>
 <h3 style="margin-left:4em;clear:both">Transcript <sup>(*)</sup></h3>
 <div id="sbparent" style="display:block;float:right;position:relative;">
-%if len(transcript) <200 and len(transcript)>30:
-<!-- Banner240 -->
-<ins class="adsbygoogle"
-     style="display:block;float:left;width:120px;height:240px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="1899000198"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
+
+%if 2>1 or storyboard_spec=="noUrl" or len(transcript)>120:
+<!-- dfpSide -->
+<div id='div-gpt-ad-1375728766120-2'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1375728766120-2'); });
 </script>
-<hr style="display:block;clear:both"/>
+</div>
+%else:
+<!-- dfpSide or dfpSideShort -->
 %endif
 <div id="sb"> </div>
-%if len(transcript)>90000:
-<hr style="display:block;clear:both"/>
-<ins class="adsbygoogle"
-     style="display:block;width:200px;height:90px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="8445708198"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-%endif
-%if len(transcript)<200 and len(transcript)>120000:
-<hr style="display:block;clear:both"/>
-<ins class="adsbygoogle"
-     style="display:block;width:200px;height:90px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="8445708198"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-%endif
 </div>
 <div id="transcript" totallines=${len(transcript)} itemprop="articleBody" style="text-align:center; width:90%; display:block; margin-left:auto; margin-right: auto; ">
 <p style="text-align:left; display:block; margin-left:auto; margin-right: auto; font-family:monospace ">
@@ -175,54 +183,11 @@ ${key}=${textline.attrib[key]} \
 %else:
   <br/>
 %endif
-%if (i==60):
-%if storyboard_spec=="noUrl":
-<span style="padding:2px;margin-left:auto;margin-right:auto;width:728px;">
-<ins class="adsbygoogle"
-     style="display:inline-block;width:728px;height:90px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="1964012594"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</span>
-<br/>
-%else:
-<span style="padding:2px;margin-left:auto;margin-right:auto;width:468px;">
-<!-- NextPage2 Con text y/o image tiene muy poco rendimiento-->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:468px;height:60px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="3875907798"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</span>
-<br/>
-%endif
-%endif
-%if (i==120):
-</p>
-<script type="text/javascript">
-ch_client = "arivero";
-ch_width = 550;
-ch_height = 120;
-ch_type = "mpu";
-ch_sid = "Chitika Default";
-ch_color_site_link = "0000CC";
-ch_color_title = "0000CC";
-ch_color_border = "FFFFFF";
-ch_color_text = "000000";
-ch_color_bg = "FFFFFF";
-</script>
-<script src="http://scripts.chitika.net/eminimalls/amm.js" type="text/javascript">
-</script>
-<br/>
-<p style="text-align:left; display:block; margin-left:auto; margin-right: auto; font-family:monospace ">\
-%endif
+
 %endfor
 </p>
 </div>
+<div></div>
  
 <script type="text/javascript">
   (function() {
@@ -363,40 +328,27 @@ ${sum(t[x] * float(y or 0) for x,y in re.compile("PT((?P<hora>[0-9.]+?)H)?((?P<m
 <script>
 document.getElementById("leftsubheader").appendChild( document.getElementById("info"));
 </script>
+<center>
+<!-- dfpFoot -->
+<div id='div-gpt-ad-1375728766120-0'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1375728766120-0'); });
+</script>
+</div>
+</center>
 
 <div style="column-count:2;-moz-column-count:2;-webkit-column-count:3;column-gap:1%;-webkit-column-gap:1%;-moz-column-gap:1%">
 </div>
-
-%if len(transcript) > 200:
-<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<div style="padding:8px;">
-<ins class="adsbygoogle"
-     style="display:inline-block;width:970px;height:90px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="7870945398"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
-%endif
-%if len(transcript) < 59:
-<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- FooterShort -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:970px;height:90px"
-     data-ad-client="ca-pub-7459812506874928"
-     data-ad-slot="3103204998"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-%endif
 
 
 <hr>
 <center><a href="/res/about.html">About this site</a>
 <small> | The code for this webservice is available under Affero AGPLv3 license in
 repository <a href="https://github.com/arivero/transcriptsearch">github:arivero/transcriptsearch</a>.
-</small>
+</small>|
+<a href="http://www.viglink.com/legal/disclosures/users?vgtag=badge">
+  <img alt="VigLink badge" height="31" src="//www.viglink.com/images/badges/88x31.png" title="Links monetized by VigLink" width="88" />
+</a>
 </center>
 <!--script async src="/res/js/bootstrap.min.js"></script-->
 <span itemprop="provider" itemscope itemtype="http://schema.org/Person">
@@ -404,5 +356,16 @@ repository <a href="https://github.com/arivero/transcriptsearch">github:arivero/
 </span>
 <meta itemprop="datePublished" content="${videoInfo['publishedAt']}"/>
 </div> <!--end itemscope-->
+<script type="text/javascript">
+  var vglnk = { api_url: '//api.viglink.com/api',
+                key: '0ff6dcd4eb8644f68ac5dfe2ba07f7ac' };
+
+  (function(d, t) {
+    var s = d.createElement(t); s.type = 'text/javascript'; s.async = true;
+    s.src = ('https:' == document.location.protocol ? vglnk.api_url :
+             '//cdn.viglink.com/api') + '/vglnk.js';
+    var r = d.getElementsByTagName(t)[0]; r.parentNode.insertBefore(s, r);
+  }(document, 'script'));
+</script>
 </body>
 </html>

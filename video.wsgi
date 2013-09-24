@@ -19,13 +19,15 @@ import httplib2 #Tiene cache. Ver http://httplib2.googlecode.com/hg/doc/html/lib
 import json
 import xml.etree.ElementTree as ET
 import time
+import random
 import cgi
 import ConfigParser
+import re
 config=ConfigParser.RawConfigParser()
 config.read(["/etc/configfile.dat"])
 MIAPPKEY=config.get("keys","MIAPPKEY")
 PROXYLIST=config.get("keys","PROXYLIST").split(',')
-URLCOMMANDVIDEO="https://www.googleapis.com/youtube/v3/videos?id=%s&part=snippet,contentDetails,status,topicDetails,recordingDetails&fields=etag,items(snippet(title,description,categoryId,publishedAt,channelTitle,channelId),contentDetails/caption,contentDetails/duration,status(uploadStatus,license,embeddable),recordingDetails(locationDescription,recordingDate),topicDetails/topicIds)&key=%s"
+URLCOMMANDVIDEO="https://www.googleapis.com/youtube/v3/videos?id=%s&part=snippet,contentDetails,status,topicDetails,recordingDetails&fields=etag,items(snippet(title,description,categoryId,publishedAt,channelTitle,channelId),contentDetails/caption,contentDetails/duration,contentDetails/contentRating,contentDetails/contentRating/ytRating,status(uploadStatus,license,embeddable),recordingDetails(locationDescription,recordingDate),topicDetails,topicDetails/topicIds,topicDetails/relevantTopicIds)&key=%s"
 
 from mako.lookup import TemplateLookup
 from mako import exceptions
@@ -65,6 +67,15 @@ def doApiHttp(apiHttpObject,apiHttpQuery):
     resp,content=apiHttpObject.request(apiHttpQuery)
     return resp,content
 
+def doDbRecent(url,title,description,agente,hasreferer):
+    if hasreferer:
+      #print agente
+      import anydbm
+      import pickle
+      db = anydbm.open('/tmp/recentVisits', 'c')
+      db[str(random.randint(0,19))]=pickle.dumps({'id':url,'title':title,'desc':description})
+      db.close()
+
 lookup = TemplateLookup(directories=[root, root + 'templates','./'], 
               filesystem_checks=True, 
               module_directory=root+'modules',
@@ -73,7 +84,7 @@ lookup = TemplateLookup(directories=[root, root + 'templates','./'],
 
 def serve(environ, start_response):
     videoId=cgi.escape(environ["SCRIPT_URL"].split('/')[2])   #consider re.match for serious control
-
+    #print environ
     if len(videoId) <> 11:
         start_response('404 Not Found',[])
         return ["<body><p>Wrong ID <p> Please extract the ID from youtube URL</body>"]
@@ -95,7 +106,6 @@ def serve(environ, start_response):
     apiThread.start()
 
     import urllib
-    import re
     lang,trname,kind="","",""
     resp,contentMainYT=f_retry(http.request,"http://www.youtube.com/watch?v=%s"%videoId)
     #we could parse for #<meta name="keywords" content= too, here
@@ -161,8 +171,37 @@ def serve(environ, start_response):
            start_response('408 Request Timeout',[])   #or 404 Not Found or 410 Gone si queremos que purgue el recurso
            return ["<body>no data now, according YT API<p>Please try again in a few hours</body>"]
     contentInfo=json.loads(content)["items"][0]
+    dbthread=Thread(target=doDbRecent,args=(videoId,contentInfo["snippet"]["title"],contentInfo["snippet"]["description"],environ["HTTP_USER_AGENT"],environ.has_key("HTTP_REFERER")))
+    dbthread.start()
     #print contentInfo["status"]
-    template=lookup.get_template("video.html")
+    bannedList=("eG4HQc9NVJQ",)
+    #print  contentInfo["contentDetails"]["contentRating"]
+    if "contentRating" in contentInfo["contentDetails"] and "ytRating" in contentInfo["contentDetails"]["contentRating"] and contentInfo["contentDetails"]["contentRating"]["ytRating"]=="ytAgeRestricted":
+           print "is ytAgeRestricted!!!"
+           template=lookup.get_template("videoAdult.html")
+    elif videoId in bannedList:
+           template=lookup.get_template("videoAdult2.html")
+    else:
+       if not "contentRating" in contentInfo["contentDetails"] or not "ytRating" in contentInfo["contentDetails"]["contentRating"]:
+          print "no ytRating", contentInfo["contentDetails"]
+          contentInfo["contentDetails"]["contentRating"]={}
+          contentInfo["contentDetails"]["contentRating"]["ytRating"]="No Rating, thus OK"
+       if random.random()<0.666:
+         if random.random()<0.50:
+           template=lookup.get_template("videostd.html")
+         else:
+           template=lookup.get_template("video.html")
+       else:
+            template=lookup.get_template("videodfp.html")
+    if not "topicDetails" in contentInfo:
+       contentInfo["topicDetails"]={}
+       print "no TopicDetails!!!"
+    else:
+       print contentInfo["topicDetails"]
+    if not "topicIds" in contentInfo["topicDetails"]:
+        contentInfo["topicDetails"]["topicIds"]=[]
+    if "relevantTopicIds" in contentInfo["topicDetails"]:
+        contentInfo["topicDetails"]["topicIds"]+=contentInfo["topicDetails"]["relevantTopicIds"]
     output=template.render(videoInfo=contentInfo["snippet"],videoInfoFull=contentInfo,
                            videoId=videoId,
                            language=lang if lang <> "" else "en",
@@ -181,6 +220,7 @@ def serve(environ, start_response):
        response_headers.append(('Cache-control:','public'))
     status = '200 OK'
     start_response(status, response_headers)
+    dbthread.join()
     return [output]
  
 if __name__ == '__main__':
